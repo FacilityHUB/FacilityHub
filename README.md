@@ -32,4 +32,4 @@ Welcome to our GitHub containing our main scripts.
 
 ## Features
 
-For information about our features, please refer to our [Discord]([#](https://discord.gg/jTuXv2Kcsn)) as we don’t want to clutter this wiki with long lists of features for each script.
+For information about our features, please refer to our [Discord](https://discord.gg/jTuXv2Kcsn) as we don’t want to clutter this wiki with long lists of features for each script.
