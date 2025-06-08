@@ -1,4 +1,3 @@
-
 local Fluent = loadstring(game:HttpGet("https://raw.githubusercontent.com/FacilityHUB/Interface-Utilisateur/refs/heads/main/Fluent"))()
 local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/SaveManager.lua"))()
 local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()
@@ -551,7 +550,7 @@ Tabs.Misc:AddButton({
 
     Toggle:OnChanged(function()
         if Options.AutoExecute.Value then
-            queue_on_teleport("loadstring(game:HttpGet('https://raw.githubusercontent.com/FacilityHUB/Facility-Key/refs/heads/main/War%20Tycoon%20v1.0.0.0c'))()") --Changer
+            queue_on_teleport("loadstring(game:HttpGet('https://raw.githubusercontent.com/FacilityHUB/FacilityHub/refs/heads/main/Rivals'))()") --Changer
             sendValidnotif("Script will be auto executed after teleport")
         end
     end)
