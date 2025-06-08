@@ -1,1 +1,587 @@
 
+local Fluent = loadstring(game:HttpGet("https://raw.githubusercontent.com/FacilityHUB/Interface-Utilisateur/refs/heads/main/Fluent"))()
+local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/SaveManager.lua"))()
+local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()
+local AimbotModule = loadstring(game:HttpGet("https://raw.githubusercontent.com/FacilityHUB/Modules/refs/heads/main/Rivals"))() 
+local EspModule = loadstring(game:HttpGet("https://raw.githubusercontent.com/FacilityHUB/Modules/refs/heads/main/Pourquoipasv2"))()
+local LightingController = loadstring(game:HttpGet("https://raw.githubusercontent.com/FacilityHUB/Modules/refs/heads/main/Visual%20V2"))() 
+
+local Window = Fluent:CreateWindow({
+    Title = "Facility | Rivals | GouziGouzi",
+    SubTitle = "by Individu 😊",
+    TabWidth = 120,
+    Size = UDim2.fromOffset(580, 460),
+    Acrylic = false, 
+    Theme = "Sakura",
+    MinimizeKey = Enum.KeyCode.LeftControl 
+})
+
+EspModule.sharedSettings.maxDistance = 500
+EspModule.sharedSettings.limitDistance = true
+
+local Tabs = {
+    Aimbot = Window:AddTab({ Title = "Aimbot", Icon = "crosshair" }),
+    Fov = Window:AddTab({ Title = "Fov", Icon = "circle"}),
+    Esp = Window:AddTab({ Title = "Esp", Icon = "scan" }),
+    GunMods = Window:AddTab({ Title = "GunMods", Icon = "swords"}),
+    Weapons = Window:AddTab({ Title = "Weapons", Icon = "arrow-left-right"}),
+    Map = Window:AddTab({ Title = "Map", Icon = "arrow-left-right"}),
+    Misc = Window:AddTab({ Title = "Misc", Icon = "columns-4"}),
+    Settings = Window:AddTab({ Title = "Settings", Icon = "settings" })
+}
+
+local Options = Fluent.Options
+
+--// Aimbot
+    local Toggle = Tabs.Aimbot:AddToggle("Aimbot", {Title = "Aimbot | Enabled", Default = AimbotModule.Configuration.AimBotEnabled , Description = "Don't be stupid, it activates the aimbot"})
+
+    Toggle:OnChanged(function()
+        AimbotModule.Configuration.AimBotEnabled = Options.Aimbot.Value
+    end)
+
+    Options.Aimbot:SetValue(false)
+--
+    local Toggle = Tabs.Aimbot:AddToggle("AimbotToggleMode", {Title = "Aimbot | ToggleMode", Default = AimbotModule.Configuration.AimToggleMode , Description = "One click the aimbot remains active"})
+
+    Toggle:OnChanged(function()
+        AimbotModule.Configuration.AimToggleMode = Options.AimbotToggleMode.Value
+    end)
+
+    Options.AimbotToggleMode:SetValue(false)
+--
+    local Dropdown = Tabs.Aimbot:AddDropdown("AimBotMode", {
+        Title = "Aimbot | Mode",
+        Values = {"Camera", "Mouse"},
+        Multi = false,
+        Default = AimbotModule.Configuration.AimMode,
+        Description = "Mouse for the good executor and Camera for the other xeno shit."
+    })
+
+    Dropdown:SetValue("Mouse")
+
+    Dropdown:OnChanged(function(Value)
+        AimbotModule.Configuration.AimMode = Value
+    end)
+--
+local InterfaceSection = Tabs.Aimbot:AddSection("Checks")
+--
+    local Toggle = Tabs.Aimbot:AddToggle("AimbotWallCheck", {Title = "Check | Walls", Default = AimbotModule.Configuration.WallCheck})
+
+    Toggle:OnChanged(function()
+        AimbotModule.Configuration.WallCheck = Options.AimbotWallCheck.Value
+    end)
+
+    Options.AimbotWallCheck:SetValue(false)
+--
+    local Toggle = Tabs.Aimbot:AddToggle("AimbotTeamCheck", {Title = "Check | Team", Default = AimbotModule.Configuration.TeamCheck})
+
+    Toggle:OnChanged(function()
+        AimbotModule.Configuration.TeamCheck = Options.AimbotTeamCheck.Value
+    end)
+
+    Options.AimbotWallCheck:SetValue(false)
+--
+local InterfaceSection = Tabs.Aimbot:AddSection("Triggers")
+--
+    local Toggle = Tabs.Aimbot:AddToggle("AimbotTriggers", {Title = "TriggerBot | Enabled", Default = AimbotModule.Configuration.TriggerBotEnabled, Description = "With the 'AimCamera' mode, you'll get the same feel as the fake SilentAim in other Script Rivals.😊😚"})
+
+    Toggle:OnChanged(function()
+        AimbotModule.Configuration.TriggerBotEnabled = Options.AimbotTriggers.Value
+    end)
+
+    Options.AimbotTriggers:SetValue(false)
+--
+    local Slider = Tabs.Aimbot:AddSlider("AimbotTriggerDelay", {
+        Title = "TriggerBot | Delay",
+        Description = "Set Delay Fire",
+        Default = 0.1,
+        Min = 0,
+        Max = 1,
+        Rounding = 1,
+        Callback = function(Value)
+            AimbotModule.Configuration.TriggerDelay = Value
+        end
+    })
+
+    Slider:OnChanged(function(Value)
+        AimbotModule.Configuration.TriggerDelay = Value
+    end)
+--
+local InterfaceSection = Tabs.Aimbot:AddSection("Settings")
+--
+    local Toggle = Tabs.Aimbot:AddToggle("AimbotPrediction", {Title = "Aim | Prediction", Default = AimbotModule.Configuration.aimpredictions})
+
+    Toggle:OnChanged(function()
+        AimbotModule.Configuration.aimpredictions = Options.AimbotPrediction.Value
+    end)
+
+    Options.AimbotPrediction:SetValue(false)
+--
+    local Slider = Tabs.Aimbot:AddSlider("AimbotPredictionTime", {
+        Title = "Prediction | Time",
+        Description = "Set prediction speed",
+        Default = 0.1,
+        Min = 0,
+        Max = 1,
+        Rounding = 1,
+        Callback = function(Value)
+            AimbotModule.Configuration.predictionTime = Value
+        end
+    })
+
+    Slider:OnChanged(function(Value)
+        AimbotModule.Configuration.predictionTime = Value
+    end)
+--
+    local Slider = Tabs.Aimbot:AddSlider("AimbotSensitivy", {
+        Title = "Prediction | Sensitivity",
+        Description = "Set Sensitivy Mouse Aim",
+        Default = 0.1,
+        Min = 0,
+        Max = 1,
+        Rounding = 1,
+        Callback = function(Value)
+            AimbotModule.Configuration.sensitivity = Value
+        end
+    })
+
+    Slider:OnChanged(function(Value)
+        AimbotModule.Configuration.sensitivity = Value
+    end)
+--// Fov
+    local Toggle = Tabs.Fov:AddToggle("Fov", {Title = "Fov | Enabled", Default = AimbotModule.Configuration.Visible , Description = "Don't be stupid, it activates the Esp"})
+
+    Toggle:OnChanged(function()
+        AimbotModule.Configuration.Visible = Options.Fov.Value
+        AimbotModule.FOV.Visible = Options.Fov.Value
+    end)
+
+    Options.Fov:SetValue(false)
+--
+    local Slider = Tabs.Fov:AddSlider("FovSize", {
+        Title = "Fov | Size",
+        Default = 150,
+        Min = 80,
+        Max = 500,
+        Rounding = 1,
+        Callback = function(Value)
+        AimbotModule.Configuration.Size = Value
+        AimbotModule.FOV.Radius = AimbotModule.Configuration.Size
+        end
+    })
+--
+    local Slider = Tabs.Fov:AddSlider("FovThickness", {
+        Title = "Fov | Thickness",
+        Default = 0.1,
+        Min = 0.1,
+        Max = 500,
+        Rounding = 1,
+        Callback = function(Value)
+        AimbotModule.Configuration.Thickness = Value
+        AimbotModule.FOV.Thickness = AimbotModule.Configuration.Thickness
+        end
+    })
+--
+    local Colorpicker = Tabs.Fov:AddColorpicker("FovColorBase", {
+        Title = "Fov | Color",
+        Default = Color3.fromRGB(96, 205, 255)
+    })
+
+    Colorpicker:OnChanged(function()
+        AimbotModule.Configuration.Color = Colorpicker.Value
+    end)
+--
+    local Colorpicker = Tabs.Fov:AddColorpicker("FovLockColor", {
+        Title = "Fov | LockColor",
+        Default = Color3.fromRGB(96, 205, 255)
+    })
+
+    Colorpicker:OnChanged(function()
+        AimbotModule.Configuration.LockColor = Colorpicker.Value
+    end)
+--// Esp
+    local Toggle = Tabs.Esp:AddToggle("Esp", {Title = "Esp | Enabled", Default = EspModule.teamSettings.enemy.enabled , Description = "Don't be stupid, it activates the Esp"})
+
+    Toggle:OnChanged(function()
+        EspModule.teamSettings.enemy.enabled = Options.Esp.Value
+    end)
+
+    Options.Esp:SetValue(false)
+--
+    local Toggle = Tabs.Esp:AddToggle("EspBox2D", {Title = "Esp | Box2D", Default = EspModule.teamSettings.enemy.box })
+
+    Toggle:OnChanged(function()
+        EspModule.teamSettings.enemy.box = Options.EspBox2D.Value
+    end)
+
+    Options.EspBox2D:SetValue(false)
+--
+    local Toggle = Tabs.Esp:AddToggle("EspBox3D", {Title = "Esp | Box3D", Default = EspModule.teamSettings.enemy.box3d })
+
+    Toggle:OnChanged(function()
+        EspModule.teamSettings.enemy.box3d = Options.EspBox3D.Value
+    end)
+
+    Options.EspBox3D:SetValue(false)
+--
+    local Toggle = Tabs.Esp:AddToggle("EspHealthBar", {Title = "Esp | HealthBar", Default = EspModule.teamSettings.enemy.healthBar })
+
+    Toggle:OnChanged(function()
+        EspModule.teamSettings.enemy.healthBar = Options.EspHealthBar.Value
+    end)
+
+    Options.EspHealthBar:SetValue(false)
+--
+local xrayEnabled = false
+
+local function xray()
+    for _, v in pairs(workspace:GetDescendants()) do
+        if v:IsA("BasePart") and not v.Parent:FindFirstChildWhichIsA("Humanoid") and not v.Parent.Parent:FindFirstChildWhichIsA("Humanoid") then
+            v.LocalTransparencyModifier = xrayEnabled and 0.5 or 0
+        end
+    end
+end
+
+    local Toggle = Tabs.Esp:AddToggle("EspXray", {Title = "Esp | Xray", Default = false })
+
+    Toggle:OnChanged(function()
+        xrayEnabled = Options.EspXray.Value
+		xray()
+    end)
+
+    Options.EspXray:SetValue(false)
+--
+local InterfaceSection = Tabs.Esp:AddSection("Display")
+--
+    local Toggle = Tabs.Esp:AddToggle("EspHealth", {Title = "Display | Health", Default = EspModule.teamSettings.enemy.healthText })
+
+    Toggle:OnChanged(function()
+        EspModule.teamSettings.enemy.healthText = Options.EspHealth.Value
+    end)
+
+    Options.EspHealth:SetValue(false)
+--
+    local Toggle = Tabs.Esp:AddToggle("EspDistance", {Title = "Display | Distance", Default = EspModule.teamSettings.enemy.distance })
+
+    Toggle:OnChanged(function()
+        EspModule.teamSettings.enemy.distance = Options.EspDistance.Value
+    end)
+
+    Options.EspDistance:SetValue(false)
+--
+    local Toggle = Tabs.Esp:AddToggle("EspName", {Title = "Display | Name", Default = EspModule.teamSettings.enemy.name })
+
+    Toggle:OnChanged(function()
+        EspModule.teamSettings.enemy.name = Options.EspName.Value
+    end)
+
+    Options.EspName:SetValue(false)
+--//GunMods
+
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+local ClientRepl = LocalPlayer.PlayerScripts.Modules.ClientReplicatedClasses
+local ClientItem = require(ClientRepl.ClientFighter.ClientItem)
+
+local oldHook
+
+Tabs.GunMods:AddButton({
+    Title = "Gun Mods",
+    Description = "Once activated, there's no turning back",
+    Callback = function()
+        if oldHook then
+            hookfunction(ClientItem.Input, oldHook)
+            oldHook = nil
+        else
+            oldHook = hookfunction(ClientItem.Input, function(...)
+                local args = {...}
+                if type(args[1]) == "table" then
+                    local info = args[1].Info
+                    info.ShootRecoil = 0
+                    info.ShootSpread = 0
+                    info.ProjectileSpeed = 99999999
+                    info.ShootCooldown = 0
+                    info.QuickShotCooldown = 0
+                end
+                return oldHook(...)
+            end)
+        end
+    end
+})
+--
+    Tabs.GunMods:AddParagraph({
+        Title = "Explanation",
+        Content = "There is only one option that activates FireRate, Norecoil, ProjectileSpeed, ShootCooldown, Aimspeed and more."
+    })
+--
+
+--//Weapon Modifier
+local parentModel = workspace.ViewModels.FirstPerson
+local RunService = game:GetService("RunService")
+
+local isScriptEnabled = false
+local isMultiColorEnabled = false
+local selectedColor = Color3.fromRGB(0, 255, 255)
+local selectedMaterial = Enum.Material.Plastic
+local colorChangeSpeed = 1
+local connection
+
+local function modifyMeshPart(obj, color)
+    if obj:IsA("MeshPart") then
+        obj.Color = color
+        obj.Material = selectedMaterial
+    end
+    for _, child in pairs(obj:GetChildren()) do
+        modifyMeshPart(child, color)
+    end
+end
+
+local function applyChanges()
+    if not isScriptEnabled then return end
+    local color = isMultiColorEnabled and Color3.new(math.abs(math.sin(tick() * colorChangeSpeed)),
+                                                     math.abs(math.sin(tick() * colorChangeSpeed + math.pi / 3)),
+                                                     math.abs(math.sin(tick() * colorChangeSpeed + 2 * math.pi / 3)))
+                 or selectedColor
+
+    for _, model in pairs(parentModel:GetChildren()) do
+        local itemVisual = model:FindFirstChild("ItemVisual")
+        if itemVisual then
+            modifyMeshPart(itemVisual, color)
+        end
+    end
+end
+
+local function startColorChangeLoop()
+    if connection then connection:Disconnect() end 
+    connection = RunService.RenderStepped:Connect(function()
+        applyChanges()
+    end)
+end
+--
+    local Toggle = Tabs.Weapons:AddToggle("WeaponEnable", {Title = "Weapons | Enable", Default = false })
+
+    Toggle:OnChanged(function()
+         isScriptEnabled = Options.WeaponEnable.Value
+        if Options.WeaponEnable.Value then
+            startColorChangeLoop()
+        else
+            if connection then connection:Disconnect() end
+        end
+    end)
+
+    Options.WeaponEnable:SetValue(false)
+--
+    local Toggle = Tabs.Weapons:AddToggle("WeaponRainBows", {Title = "Weapons | RainBows", Default = false})
+
+    Toggle:OnChanged(function()
+         isMultiColorEnabled = Options.WeaponRainBows.Value
+    end)
+
+    Options.WeaponRainBows:SetValue(false)
+--
+
+local materialOptions = {}
+for _, material in pairs(Enum.Material:GetEnumItems()) do
+    table.insert(materialOptions, material.Name)
+end
+--
+    local Dropdown = Tabs.Weapons:AddDropdown("WeaponsMaterial", {
+        Title = "Weapons | Materials",
+        Values = materialOptions,
+        Multi = false,
+        Default = 1,
+    })
+
+    Dropdown:OnChanged(function(Value)
+        selectedMaterial = Enum.Material[Value]
+    end)
+--
+    local Colorpicker = Tabs.Weapons:AddColorpicker("WeaponColor", {
+        Title = "Weapons | Color",
+        Default = Color3.fromRGB(96, 205, 255)
+    })
+
+    Colorpicker:OnChanged(function()
+        selectedColor = Colorpicker.Value
+    end)
+--
+    local Slider = Tabs.Weapons:AddSlider("WeaponSpeedRainbow", {
+        Title = "Rainbow | Speed",
+        Description = "Defines the speed of color change",
+        Default = 50,
+        Min = 1,
+        Max = 100,
+        Rounding = 1,
+        Callback = function(Value)
+            colorChangeSpeed = Value / 10
+        end
+    })
+--//Map
+    local Slider = Tabs.Map:AddSlider("Slider", {
+        Title = "Brightness",
+        Default = 2,
+        Min = 0,
+        Max = 10,
+        Rounding = 1,
+        Callback = function(Value)
+            LightingController.setLightingSettings({ Brightness = Value })
+        end
+    })
+
+    Slider:OnChanged(function(Value)
+        LightingController.setLightingSettings({ Brightness = Value })
+    end)
+--
+    local Colorpicker = Tabs.Map:AddColorpicker("AmbiantColor", {
+        Title = "Ambient | Color",
+        Default = Color3.fromRGB(205, 205, 255)
+    })
+
+    Colorpicker:OnChanged(function()
+        LightingController.setLightingSettings({ Ambient = Colorpicker.Value })
+    end)
+--
+    local Slider = Tabs.Map:AddSlider("Exposure", {
+        Title = "Exposure",
+        Default = 0.5,
+        Min = -10,
+        Max = 5,
+        Rounding = 1,
+        Callback = function(Value)
+            LightingController.setLightingSettings({ ExposureCompensation = Value })
+        end
+    })
+
+    Slider:OnChanged(function(Value)
+        LightingController.setLightingSettings({ ExposureCompensation = Value })
+    end)
+--
+    local optionTable = {}
+    for skyboxName, _ in pairs(LightingController.SkyboxPresets) do
+        table.insert(optionTable, skyboxName)
+    end
+
+    local Dropdown = Tabs.Map:AddDropdown("SkyBox", {
+        Title = "SkyBox",
+        Values = optionTable,
+        Multi = false,
+        Default = 1,
+    })
+
+    Dropdown:SetValue("Blossom Daylight")
+
+    Dropdown:OnChanged(function(Value)
+        LightingController.setSkybox(Value)
+    end)
+--
+    local Colorpicker = Tabs.Map:AddColorpicker("MapColor", {
+        Title = "Map | Color",
+        Default = Color3.fromRGB(0, 0, 0)
+    })
+
+    Colorpicker:OnChanged(function()
+        LightingController.setPartColor(Colorpicker.Value)
+    end)
+--
+    local Toggle = Tabs.Map:AddToggle("RainbowEffect", {Title = "Rainbow Effect", Default = false, Description = "Not optimized for lag"})
+
+    Toggle:OnChanged(function()
+        LightingController.toggleRainbowEffect(Options.RainbowEffect.Value)
+    end)
+
+    Options.RainbowEffect:SetValue(false)
+--
+--//Misc
+Tabs.Misc:AddButton({
+    Title = "Boost FPS",
+    Description = "Optimize graphics performance",
+    Callback = function()
+        local RunService = game:GetService("RunService")
+        local Lighting   = game:GetService("Lighting")
+        local Terrain    = workspace:FindFirstChildOfClass("Terrain")
+
+        if Terrain then
+            Terrain.WaterWaveSize      = 0
+            Terrain.WaterWaveSpeed     = 0
+            Terrain.WaterReflectance   = 0
+            Terrain.WaterTransparency  = 0
+        end
+
+        Lighting.GlobalShadows = false
+        Lighting.FogEnd        = 9e9
+        settings().Rendering.QualityLevel = 1
+
+        for _, obj in ipairs(game:GetDescendants()) do
+            if obj:IsA("BasePart") then
+                obj.Material   = Enum.Material.Plastic
+                obj.Reflectance = 0
+            elseif obj:IsA("Decal") then
+                obj.Transparency = 1
+            elseif obj:IsA("ParticleEmitter") or obj:IsA("Trail") then
+                obj.Lifetime = NumberRange.new(0)
+            elseif obj:IsA("Explosion") then
+                obj.BlastPressure = 1
+                obj.BlastRadius   = 1
+            end
+        end
+
+        for _, effect in ipairs(Lighting:GetDescendants()) do
+            if effect:IsA("BlurEffect")
+            or effect:IsA("SunRaysEffect")
+            or effect:IsA("ColorCorrectionEffect")
+            or effect:IsA("BloomEffect")
+            or effect:IsA("DepthOfFieldEffect") then
+                effect.Enabled = false
+            end
+        end
+
+        workspace.DescendantAdded:Connect(function(child)
+            if child:IsA("ForceField")
+            or child:IsA("Sparkles")
+            or child:IsA("Smoke")
+            or child:IsA("Fire") then
+                RunService.Heartbeat:Wait()
+                child:Destroy()
+            end
+        end)
+    end
+})
+--
+    local Toggle = Tabs.Misc:AddToggle("AutoExecute", {Title = "Auto Execute", Default = false })
+
+    Toggle:OnChanged(function()
+        if Options.AutoExecute.Value then
+            queue_on_teleport("loadstring(game:HttpGet('https://raw.githubusercontent.com/FacilityHUB/Facility-Key/refs/heads/main/War%20Tycoon%20v1.0.0.0c'))()") --Changer
+            sendValidnotif("Script will be auto executed after teleport")
+        end
+    end)
+
+    Options.AutoExecute:SetValue(false)
+--
+--//Module
+AimbotModule.Load()
+EspModule.Load()
+
+SaveManager:SetLibrary(Fluent)
+InterfaceManager:SetLibrary(Fluent)
+
+SaveManager:IgnoreThemeSettings()
+
+SaveManager:SetIgnoreIndexes({})
+
+InterfaceManager:SetFolder("Facility")
+SaveManager:SetFolder("Facility/Rivals-Test")
+
+InterfaceManager:BuildInterfaceSection(Tabs.Settings)
+SaveManager:BuildConfigSection(Tabs.Settings)
+
+
+Window:SelectTab(1)
+
+Fluent:Notify({
+    Title = "GouziGouzi",
+    Content = "The script has been loaded.",
+    Duration = 2
+})
+
+SaveManager:LoadAutoloadConfig()
